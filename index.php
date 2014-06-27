@@ -1,8 +1,8 @@
 <?php
 require __DIR__ . '/config.php';
 
-use Geocaching\OAuth\OAuth as OAuth,
-    Geocaching\Api\Json as Json;
+use Geocaching\OAuth\OAuth;
+use Geocaching\Api\GeocachingApi;
 
 /**
  * Authentification OAuth
@@ -33,7 +33,7 @@ if (!array_key_exists('ACCESS_TOKEN', $_COOKIE) || empty($_COOKIE['ACCESS_TOKEN'
     //echo "pas identifié";
     $authentified = false;
 } else {
-    $api = new Json($_COOKIE['ACCESS_TOKEN'], PRODUCTION);
+    $api = new GeocachingApi($_COOKIE['ACCESS_TOKEN'], PRODUCTION);
 
     if(!array_key_exists('user_checking', $_COOKIE) || empty($_COOKIE['user_checking'])) {
         //echo "pas de cookie";

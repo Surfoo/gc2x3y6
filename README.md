@@ -6,7 +6,7 @@ Mystery cache available here : [http://geocaching.vaguelibre.net/GC2X3Y6/](http:
 Installation
 ============
 
-You need to retrieve the [Geocaching API](https://github.com/Surfoo/geocaching-api), PHP wrapper for the Geocaching API, and put the repository in "/usr/share/php5/".
+You need to install [composer](https://getcomposer.org/doc/00-intro.md#system-requirements), and [install the dependency](https://getcomposer.org/doc/00-intro.md#using-composer) before playing :)
 
 Fill the file config.php
 ========================

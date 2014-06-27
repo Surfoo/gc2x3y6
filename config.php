@@ -48,15 +48,7 @@ session_start();
 
 header('Content-Type: text/html; charset=UTF-8');
 
-set_include_path('/usr/share/php5/geocaching-api/src/');
-
-spl_autoload_register(function ($classname) {
-    $classname = ltrim($classname, "\\");
-    preg_match('/^(.+)?([^\\\\]+)$/U', $classname, $match);
-    $classname = str_replace("\\", "/", $match[1]). str_replace(["\\", "_"], "/", $match[2]) . ".php";
-    include_once $classname;
-});
-
+require 'vendor/autoload.php';
 
 try {
     $pdo = new PDO(DB_DRIVER . ':host='. SERVER_NAME . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
