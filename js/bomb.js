@@ -191,6 +191,10 @@
                         target.set('fillOpacity', '0.7');
                     }
                 } else {
+                    if (data.redirect) {
+                        window.location.reload();
+                        return false;
+                    }
                     alert('Erreur: ' + data.message);
                 }
             }
@@ -331,7 +335,10 @@
                 if (!data || data === "" || typeof data != 'object') {
                     return false;
                 }
-
+                if (data && !data.success && data.redirect) {
+                    window.location.reload();
+                    return false;
+                }
                 if (data && data.success) {
                     alert('Vous avez trouvé et désamorcé la bombe, félicitations !\n\nVoilà les coordonnées de la cache :\n' + data.coordinates);
                 } else {

@@ -28,6 +28,29 @@ if (isset($_SESSION[GCCODE]['last_check']) &&
 
 $_SESSION[GCCODE]['last_check'] = $_SESSION[GCCODE]['current_check'];
 
+//Check si la bombe a été désamorcée
+$query = "SELECT COUNT(*) AS nb_defused
+          FROM checks
+          INNER JOIN bombs
+          ON checks.id_bomb = bombs.id
+          AND DATE_FORMAT(bombs.created_on, '%Y-%m-%d') = CURDATE()";
+$result = $pdo->query($query);
+$defused = $result->fetchObject();
+
+//check du nombre de cible testé
+$query = 'SELECT COUNT(*) AS nb_target
+          FROM targets
+          WHERE user_id = ' . (int) $_SESSION[GCCODE]['user_id'];
+$result = $pdo->query($query);
+$targeted = $result->fetchObject();
+
+// Si la bombe a été trouvée et que le joueur n'a rien joué, il ne peux pas trouver la bombe,
+// il sera redirigé
+if($defused->nb_defused > 0 && $targeted->nb_target == 0) {
+    echo json_encode(array('success' => false, 'redirect' => true));
+    exit(0);
+}
+
 sleep(PAUSE_CHECKING);
 
 //Récupération des coordonnées de la bombe

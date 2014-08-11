@@ -108,7 +108,7 @@ if (!array_key_exists('ACCESS_TOKEN', $_COOKIE) || empty($_COOKIE['ACCESS_TOKEN'
     <meta charset="utf-8">
     <title>GC2X3Y6 - Mystery Game : Alerte à la bombe</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" media="all" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" media="all" />
     <link rel="stylesheet" href="bomb.css" media="all" />
 </head>
 <body>
@@ -168,12 +168,12 @@ if (!array_key_exists('ACCESS_TOKEN', $_COOKIE) || empty($_COOKIE['ACCESS_TOKEN'
             ?>
         </div>
     </div>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <?php
     if (isset($_SESSION[GCCODE]['ACCESS_TOKEN']) && $display_map) {
         echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false&amp;language=fr"></script>'."\n";
-        echo '<script type="text/javascript" src="js/bomb.js?20140604"></script>'."\n";
+        echo '<script type="text/javascript" src="js/bomb.js?20140811"></script>'."\n";
     }
 ?>
 </body>

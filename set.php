@@ -26,9 +26,23 @@ $user_name      = $_SESSION[GCCODE]['user_name'];
 $sth = $pdo->prepare('SELECT COUNT(*) AS nb_target FROM targets WHERE user_id = :user_id');
 $sth->execute(array(':user_id' => $user_id));
 $row = $sth->fetchObject();
-$nb_target = (int) $row->nb_target;
-if ($nb_target >= NB_ATTEMPTS) {
+if ($row->nb_target >= NB_ATTEMPTS) {
     echo json_encode(array('success' => false, 'message' => 'Bien tenté ;-)'));
+    exit(0);
+}
+
+//Check si la bombe a été désarmorcée entre temps alors que le joueur
+//est encore sur la carte. Il sera redirigé
+$query = "SELECT COUNT(*) AS nb_defused
+          FROM checks
+          INNER JOIN bombs
+          ON checks.id_bomb = bombs.id
+          AND DATE_FORMAT(bombs.created_on, '%Y-%m-%d') = CURDATE()";
+$result = $pdo->query($query);
+$defused = $result->fetchObject();
+
+if($defused->nb_defused > 0) {
+    echo json_encode(array('success' => false, 'redirect' => true));
     exit(0);
 }
 
@@ -46,23 +60,20 @@ if (is_null($bomb)) {
 
 $distance = haversineGreatCircleDistance($user_latitude, $user_longitude, $bomb->lat, $bomb->lng);
 $user_inside = ($distance < $user_radius) ? true : false;
+$query_params = array(':user_id'        => $user_id,
+                      ':user_name'      => $user_name,
+                      ':user_latitude'  => $user_latitude,
+                      ':user_longitude' => $user_longitude,
+                      ':user_radius'    => $user_radius,
+                      ':user_inside'    => (int) $user_inside);
+
 
 $sth = $pdo->prepare('INSERT INTO targets (user_id, user_name, lat, lng, radius, inside, created_on)'.
                      'VALUES(:user_id, :user_name, :user_latitude, :user_longitude, :user_radius, :user_inside, NOW())');
-$sth->execute(array(':user_id'        => $user_id,
-                    ':user_name'      => $user_name,
-                    ':user_latitude'  => $user_latitude,
-                    ':user_longitude' => $user_longitude,
-                    ':user_radius'    => $user_radius,
-                    ':user_inside'    => (int) $user_inside));
+$sth->execute($query_params);
 
 $sth = $pdo->prepare('INSERT INTO logs (user_id, user_name, lat, lng, radius, inside, created_on)'.
                      'VALUES(:user_id, :user_name, :user_latitude, :user_longitude, :user_radius, :user_inside, NOW())');
-$sth->execute(array(':user_id'        => $user_id,
-                    ':user_name'      => $user_name,
-                    ':user_latitude'  => $user_latitude,
-                    ':user_longitude' => $user_longitude,
-                    ':user_radius'    => $user_radius,
-                    ':user_inside'    => (int) $user_inside));
+$sth->execute($query_params);
 
 echo json_encode(array('success' => true, 'inside' => $user_inside));
