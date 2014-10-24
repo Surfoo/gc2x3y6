@@ -77,6 +77,13 @@ if (!array_key_exists('ACCESS_TOKEN', $_COOKIE) || empty($_COOKIE['ACCESS_TOKEN'
         }
     }
 
+    $mysqli = new mysqli(SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+    if ($mysqli->connect_error) {
+        die('Erreur de connexion (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
+    }
+
+    $mysqli->query('SET time_zone = "' . date_default_timezone_get() . '"');
+
     $authentified = true;
 
     //Check si la bombe a été désamorcée

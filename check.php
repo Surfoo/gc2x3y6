@@ -79,22 +79,21 @@ $sth->execute(array(':user_id' => (int) $_SESSION[GCCODE]['user_id'],
 
 
 //Récupération des joueurs ayant déjà trouvé la bombe
-$query = 'SELECT DISTINCT(`user_id`), `user_name`
-          FROM `checks`
-          ORDER BY `created_on`;';
+$query = 'SELECT user_name FROM `checks` GROUP BY user_id ORDER BY created_on;';
 $minesweepers = $pdo->query($query);
 
-$query = 'SELECT COUNT(DISTINCT(`user_id`)) AS count_winners
-          FROM `checks`
-          ORDER BY `created_on`;';
-$result = $pdo->query($query);
-$count_winners = $result->fetchObject();
+$rows = $minesweepers->fetchAll(PDO::FETCH_ASSOC);
+foreach ($rows as $user) {
+    $data[] = $user['user_name'];
+}
+
+$count_winners = count($data);
 
 define('NB_COLUMNS'  ,   3);
 define('COLUMN_WIDTH', 170);
 
 $width = NB_COLUMNS * COLUMN_WIDTH;
-$height = 35 + 17 * ceil($count_winners->count_winners/NB_COLUMNS);
+$height = 35 + 17 * ceil($count_winners/NB_COLUMNS);
 
 putenv('GDFONTPATH=/usr/share/fonts/truetype/ttf-dejavu/');
 
@@ -115,11 +114,7 @@ imagettftext($im, 16, 0, 11, 26, $grey, $font, $text);
 // Ajout du texte
 imagettftext($im, 16, 0, 10, 25, $black, $font, $text);
 
-while ($row = $minesweepers->fetch(PDO::FETCH_ASSOC)) {
-    $data[] = $row['user_name'];
-}
-
-$data = array_chunk($data, ceil($count_winners->count_winners/NB_COLUMNS), true);
+$data = array_chunk($data, ceil($count_winners/NB_COLUMNS), true);
 foreach ($data as $idx_column => $columns) {
     $y_start = 47;
     $x_start = 10 + $idx_column * COLUMN_WIDTH;
